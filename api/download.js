@@ -1,56 +1,52 @@
-// api/download.js - Vercel Serverless Function
-// Handle download image (bypass CORS)
-
+// api/download.js
 export default async function handler(req, res) {
-    // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'GET') return res.status(405).end();
 
-    // Only allow GET
-    if (req.method !== 'GET') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { url } = req.query;
-
-    if (!url) {
-        return res.status(400).json({ error: 'URL parameter is required' });
+    const rawUrl = req.query.url;
+    if (!rawUrl) {
+        return res.status(400).json({ error: 'URL required' });
     }
 
     try {
-        // Fetch image from URL
-        const response = await fetch(url);
-        
+        const imageUrl = decodeURIComponent(rawUrl);
+
+        const response = await fetch(imageUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0',
+                'Accept': 'image/*'
+            }
+        });
+
         if (!response.ok) {
-            throw new Error('Failed to fetch image');
+            throw new Error(`Fetch failed ${response.status}`);
         }
 
-        // Get image as buffer
-        const imageBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(imageBuffer);
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.startsWith('image/')) {
+            throw new Error('Not an image');
+        }
 
-        // Generate filename
-        const timestamp = Date.now();
-        const filename = `ustadz-quote-${timestamp}.jpg`;
+        const buffer = Buffer.from(await response.arrayBuffer());
+        const ext = contentType.split('/')[1] || 'jpg';
 
-        // Set headers for download
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-        res.setHeader('Cache-Control', 'no-cache');
-        
+        res.setHeader('Content-Type', contentType);
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="ustadz-quote-${Date.now()}.${ext}"`
+        );
+
         return res.status(200).send(buffer);
 
-    } catch (error) {
-        console.error('Download error:', error);
-        return res.status(500).json({ 
-            error: 'Failed to download image',
-            details: error.message 
+    } catch (err) {
+        console.error('[DOWNLOAD ERROR]', err);
+        return res.status(500).json({
+            error: 'Download failed',
+            message: err.message
         });
     }
-}
+    }
