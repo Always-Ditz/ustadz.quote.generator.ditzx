@@ -1,0 +1,12 @@
+{
+  "name": "ustadz-quote-generator",
+  "version": "1.0.0",
+  "description": "Generate quote dengan style ustadz",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["quote", "generator", "ustadz"],
+  "author": "",
+  "license": "MIT"
+}

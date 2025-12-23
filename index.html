@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ustadz Quote Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Container -->
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+
+    <!-- Main Content (Hidden until background loaded) -->
+    <div class="content" id="mainContent">
+        <div class="glass-card">
+            <h1 class="title">Ustadz Quote Generator</h1>
+            <p class="subtitle">Buat Soalan Ustadz dengan mudah. Hanya buat Have fun</p>
+
+            <div class="input-group">
+                <textarea 
+                    id="quoteText" 
+                    placeholder="Masukkan quote kamu disini..."
+                    rows="4"
+                    maxlength="200"
+                ></textarea>
+                <div class="char-count">
+                    <span id="charCount">0</span>/200
+                </div>
+            </div>
+
+            <button class="btn-generate" id="generateBtn">
+                <span class="btn-text">Generate Quote</span>
+                <span class="btn-loader" style="display: none;">
+                    <span class="loader"></span>
+                </span>
+            </button>
+
+            <!-- Result Container -->
+            <div class="result-container" id="resultContainer" style="display: none;">
+                <div class="image-wrapper">
+                    <img id="resultImage" alt="Generated Quote" />
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons" id="actionButtons">
+                    <button class="btn-download" id="downloadBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download
+                    </button>
+                    <button class="btn-reset" id="resetBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
